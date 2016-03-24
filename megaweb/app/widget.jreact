@@ -1,7 +1,7 @@
 mixin opts_text_input(type, placeholder, path)
 	input.form-control.fill(type=type placeholder=placeholder onChange=locals.handlers.change_from_view(path))
 mixin textarea_input(placeholder, path)
-	textarea.form-control.fill(placeholder=placeholder onChange=locals.handlers.change_from_view(path))
+	textarea.form-control.fill.fillh(placeholder=placeholder onChange=locals.handlers.change_from_view(path))
 mixin opts_button_input(lab, path)
 	if Imuta.get_in(locals, path)
 		button.btn.btn-success(type="button" onClick=locals.handlers.change_from_view_swap(path))= lab
