@@ -1,0 +1,56 @@
+mixin opts_text_input(type, lab, placeholder, path)
+	div.row
+		div.col-md-6
+			h5= lab
+		div.col-md-6
+			input.form-control.fill(type=type placeholder=placeholder onChange=locals.handlers.change_from_view(path))
+mixin textarea_input(placeholder, path)
+	textarea.form-control.fill(placeholder=placeholder onChange=locals.handlers.change_from_view(path))
+mixin opts_button_input(lab, path)
+	if Imuta.get_in(locals, path)
+		button.btn.btn-success.navbar-btn(type="button" onClick=locals.handlers.change_from_view_swap(path))= lab
+	else
+		button.btn.btn-default.navbar-btn(type="button" onClick=locals.handlers.change_from_view_swap(path))= lab
+mixin sidebar(visibility)
+	div.navbar.navbar-default.sidebar.transparent.ontop(class=visibility)
+		div.container-fluid.padded
+			div.row
+				div.col-md-12
+					div.btn-group.fill(role="group")
+						button.btn.btn-warning.fill50(type="button" onClick=locals.handlers.save_opts()) сохранить опции
+						button.btn.btn-danger.fill50(type="button" onClick=locals.handlers.reset_opts()) сбросить опции
+mixin make_main_block(blo, visibility)
+	div.container-fluid.padded(class=visibility)
+		if blo.val == "main_page"
+			div.row
+				div.col-md-12
+					+textarea_input("users / groups ids list", ["data","id_input"])
+//
+//	page content
+//
+div.row.text-center
+	nav.navbar.navbar-default.navbar-fixed-top.transparent
+		div.padded_left(class="btn-group" role="group")
+			+opts_button_input("users", ["opts","search_users"])
+			+opts_button_input("groups", ["opts","search_groups"])
+		div.padded_left(class="btn-group" role="group")
+			button.btn.btn-primary.navbar-btn(type="button" onClick=locals.handlers.search(locals.data.id_input))= "search"
+		div.padded_left(class="btn-group" role="group")
+			button.btn.btn-primary.navbar-btn(type="button" onClick=locals.handlers.download())= "download"
+		//div.padded_left(class="btn-group" role="group")
+			+opts_button_input("инструменты", ["opts","sidebar"])
+		//div.padded_left(class="btn-group" role="group")
+			each blo in locals.opts.blocks
+				if locals.opts.showing_block == blo.val
+					button.btn.btn-success.navbar-btn(type="button" onClick=locals.handlers.show_block(blo.val))= blo.lab
+				else
+					button.btn.btn-default.navbar-btn(type="button" onClick=locals.handlers.show_block(blo.val))= blo.lab
+//if locals.opts.sidebar
+	+sidebar("visible")
+//else
+	+sidebar("hidden")
+each blo in locals.opts.blocks
+	if locals.opts.showing_block == blo.val
+		+make_main_block(blo, "visible")
+	else
+		+make_main_block(blo, "hidden")
