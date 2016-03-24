@@ -7,8 +7,7 @@ constants =
 		sidebar: false
 		showing_block: "main_page"
 		version: '__VERSION__'
-		search_groups: false
-		search_users: true
+		search_subject: "users"
 	}
 	colors: () -> {red: '#CC3300', yellow: '#FFFF00', pink: '#FF6699'}
 #
@@ -52,12 +51,15 @@ init_state =
 				state.opts.showing_block = constants.default_opts().showing_block
 				state.opts.sidebar = constants.default_opts().sidebar
 				state)
-		search: (input) ->
-			input.split("\n")
-				.map(parseInt)
-				.filter((n) -> Imuta.is_number(n) and not(isNaN(n)))
-				.map((n) ->
-					VK.api("audio.get", {owner_id: n}, (ans) -> notice(JSON.stringify(ans))))
+		search: () ->
+			actor.cast((state) ->
+				warn(state.opts.search_subject)
+				state.data.id_input.split("\n")
+					.map(parseInt)
+					.filter((n) -> Imuta.is_number(n) and not(isNaN(n)))
+					.map((n) ->
+						VK.api("audio.get", {owner_id: n}, (ans) -> notice(JSON.stringify(ans))))
+				state)
 		download: () ->
 			download("1\n2\n3\n", "ids.txt", "text/plain")
 	}
@@ -83,16 +85,16 @@ render_process = () ->
 #	notifications
 #
 error = (mess) ->
-	$.growl.error({ message: mess , duration: 20000})
+	$.growl.error({ message: mess , duration: 700})
 warn = (mess) ->
-	$.growl.warning({ message: mess , duration: 20000})
+	$.growl.warning({ message: mess , duration: 700})
 notice = (mess) ->
-	$.growl.notice({ message: mess , duration: 20000})
+	$.growl.notice({ message: mess , duration: 700})
 document.addEventListener "DOMContentLoaded", (e) ->
 	domelement  = document.getElementById("main_frame")
 	actor.get().handlers.load_opts()
 	actor.zcast(() -> render_process())
 	VK.init(
 		() -> notice("VK api подключено"),
-		() -> error("VK api не подключено"),
+		() -> error("VK api НЕ подключено"),
 		'5.50')
