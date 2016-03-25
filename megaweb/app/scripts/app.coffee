@@ -134,7 +134,7 @@ init_state =
 #	actor to not care abount concurrency
 #
 
-actor = new Act(init_state, "pure", 50)
+actor = new Act(init_state, "pure", 300)
 
 #
 #	view renderers
