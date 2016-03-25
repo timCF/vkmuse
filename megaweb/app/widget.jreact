@@ -1,5 +1,7 @@
 mixin opts_text_input(type, placeholder, path)
 	input.form-control.fill(type=type placeholder=placeholder onChange=locals.handlers.change_from_view(path))
+mixin textarea_input_simple(placeholder, path)
+	textarea.form-control.fill(placeholder=placeholder rows="10" onChange=locals.handlers.change_from_view(path))
 mixin textarea_input(placeholder, path)
 	textarea.form-control.fill.fillh(placeholder=placeholder onChange=locals.handlers.change_from_view(path))
 mixin opts_button_input(lab, path)
@@ -33,13 +35,13 @@ mixin make_main_block(blo, visibility)
 											option= el
 								if locals.opts.search_param == "artist"
 									div.col-xs-12.padded_top
-										+opts_text_input("text","enter artist",["data","search_artist"])
+										+textarea_input_simple("enter artists",["data","search_artist"])
 								if locals.opts.search_param == "title"
 									div.col-xs-12.padded_top
-										+opts_text_input("text","enter title",["data","search_title"])
+										+textarea_input_simple("enter titles",["data","search_title"])
 							if locals.opts.search_object == "video"
 								div.col-xs-12.padded_top
-									+opts_text_input("text","enter title",["data","search_title"])
+									+textarea_input_simple("enter titles",["data","search_title"])
 							div.col-xs-12.padded_top
 								button.btn.btn-danger.fill(type="button" onClick=locals.handlers.search())= "search"
 				div.col-xs-6.padded_top
@@ -67,7 +69,7 @@ if locals.data.is_locked
 	div.overlay
 		div.pbar.fill
 			div.progress.fill
-				div.progress-bar.progress-bar-danger.progress-bar-striped.active(style="width: "+locals.data.emergency+"%")
+				div.progress-bar.progress-bar-danger.progress-bar-striped.active(style="width: "+locals.data.pbar_emergency+"%")
 				div.progress-bar.progress-bar-warning.progress-bar-striped.active(style="width: "+locals.data.pbar_failed+"%")
 				div.progress-bar.progress-bar-success.progress-bar-striped.active(style="width: "+locals.data.pbar_ok+"%")
-				div.progress-bar.progress-bar-default.progress-bar-striped.active(style="width: "+locals.data.pbar_rest+"%")
+				div.progress-bar.progress-bar-primary.progress-bar-striped.active(style="width: "+locals.data.pbar_rest+"%")
