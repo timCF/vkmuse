@@ -15,12 +15,33 @@ mixin make_main_block(blo, visibility)
 					div.container-fluid
 						div.row
 							div.col-xs-12
-								div(class="btn-group" role="group")
-									select.form-control(onChange=locals.handlers.change_from_view(["opts","search_subject"]))
-										each el in ["users","groups"]
-											option= el
+								select.form-control.btn-primary.fill(onChange=locals.handlers.change_from_view(["opts","search_subject"]))
+									each el in ["users","groups"]
+										option= el
 							div.col-xs-12.padded_top
-								button.btn.btn-primary(type="button" onClick=locals.handlers.download())= "download"
+								select.form-control.btn-info.fill(onChange=locals.handlers.change_from_view(["opts","search_type"]))
+									each el in ["substring","direct"]
+										option= el
+							div.col-xs-12.padded_top
+								select.form-control.btn-success.fill(onChange=locals.handlers.change_from_view(["opts","search_object"]))
+									each el in ["audio","video"]
+										option= el
+							if locals.opts.search_object == "audio"
+								div.col-xs-12.padded_top
+									select.form-control.btn-warning.fill(onChange=locals.handlers.change_from_view(["opts","search_param"]))
+										each el in ["artist","title"]
+											option= el
+								if locals.opts.search_param == "artist"
+									div.col-xs-12.padded_top
+										+opts_text_input("text","enter artist",["data","search_artist"])
+								if locals.opts.search_param == "title"
+									div.col-xs-12.padded_top
+										+opts_text_input("text","enter title",["data","search_title"])
+							if locals.opts.search_object == "video"
+								div.col-xs-12.padded_top
+									+opts_text_input("text","enter title",["data","search_title"])
+							div.col-xs-12.padded_top
+								button.btn.btn-danger.fill(type="button" onClick=locals.handlers.search())= "search"
 				div.col-xs-6.padded_top
 					+textarea_input("users / groups ids list", ["data","id_input"])
 
@@ -35,8 +56,18 @@ each blo in locals.opts.blocks
 // FOOTER
 
 nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center.c_main 
-	button.btn.btn-primary(type="button" onClick=locals.handlers.search())= "search"
 	a.padded_left(href="http://timcf.github.io/" target="_blank")
 		button.btn.btn-info.navbar-btn(type="button")= "autor"
 	a.padded_left(href="http://yasobe.ru/na/opensource#form_submit" target="_blank")
 		button.btn.btn-success.navbar-btn(type="button")= "donate"
+
+// LOCK
+
+if locals.data.is_locked
+	div.overlay
+		div.pbar.fill
+			div.progress.fill
+				div.progress-bar.progress-bar-danger.progress-bar-striped.active(style="width: "+locals.data.emergency+"%")
+				div.progress-bar.progress-bar-warning.progress-bar-striped.active(style="width: "+locals.data.pbar_failed+"%")
+				div.progress-bar.progress-bar-success.progress-bar-striped.active(style="width: "+locals.data.pbar_ok+"%")
+				div.progress-bar.progress-bar-default.progress-bar-striped.active(style="width: "+locals.data.pbar_rest+"%")
