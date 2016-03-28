@@ -51011,6 +51011,7 @@ if (typeof define === 'function' && define.amd) {
           if (Imuta.is_map(apians) && Imuta.is_list(apians.response)) {
             apians.response.forEach(function(el) {
               var audio, uid, _ref, _ref1;
+              console.log(el);
               if (Imuta.is_list(el.items)) {
                 _ref = el.items, (_ref1 = _ref[0], uid = _ref1.id), audio = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
                 if (uid) {
@@ -51049,13 +51050,13 @@ if (typeof define === 'function' && define.amd) {
               }
             });
             return setTimeout((function() {
-              return search_process(state, lst);
+              return this.search_process(state, lst);
             }), 1500 + Math.random * 1500);
           } else {
             console.log(apians);
             _this.error("WRONG API ANSWER " + JSON.stringify(apians));
             return setTimeout((function() {
-              return search_process_execute(state, lst, code);
+              return this.search_process_execute(state, lst, code);
             }), 5000 + Math.random * 5000);
           }
         };
