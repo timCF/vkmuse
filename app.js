@@ -50860,7 +50860,7 @@ var buf = [];
 var jade_mixins = {};
 var jade_interp;
 
-buf.push("<!DOCTYPE html5><html lang=\"ru\"><head><meta charset=\"utf-8\"/><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf8\"/><title>Vkmuse</title><link href=\"/app.css\" rel=\"stylesheet\"/><script type=\"text/javascript\" src=\"//vk.com/js/api/xd_connection.js?2\"></script><script type=\"text/javascript\" src=\"/app.js\"></script><script type=\"text/javascript\">require(\"init\")</script></head><body><div id=\"main_frame\"></div></body></html>");;return buf.join("");
+buf.push("<!DOCTYPE html5><html lang=\"ru\"><head><meta charset=\"utf-8\"/><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf8\"/><title>Vkmuse</title><link href=\"app.css\" rel=\"stylesheet\"/><script type=\"text/javascript\" src=\"//vk.com/js/api/xd_connection.js?2\"></script><script type=\"text/javascript\" src=\"app.js\"></script><script type=\"text/javascript\">require(\"init\")</script></head><body><div id=\"main_frame\"></div></body></html>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
