@@ -51012,15 +51012,15 @@ if (typeof define === 'function' && define.amd) {
         return function() {
           if (Imuta.is_map(apians) && Imuta.is_list(apians.response)) {
             apians.response.forEach(function(el) {
-              var audio, uid, _ref, _ref1;
+              var stuff, uid, _ref, _ref1;
               console.log(el);
               if (Imuta.is_list(el.items)) {
-                _ref = el.items, (_ref1 = _ref[0], uid = _ref1.id), audio = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
+                _ref = el.items, (_ref1 = _ref[0], uid = _ref1.id), stuff = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
                 if (uid) {
                   switch (state.data.search.algorithm) {
                     case "substring":
                       if (state.data.search.inputsubjectslst.some(function(ss) {
-                        return el.items.some(function(el) {
+                        return stuff.some(function(el) {
                           return el[state.data.search.field].toUpperCase().indexOf(ss) !== -1;
                         });
                       })) {
@@ -51032,7 +51032,7 @@ if (typeof define === 'function' && define.amd) {
                       break;
                     case "direct":
                       if (state.data.search.inputsubjectslst.some(function(ss) {
-                        return el.items.some(function(el) {
+                        return stuff.some(function(el) {
                           return el[state.data.search.field].toUpperCase() === ss;
                         });
                       })) {
