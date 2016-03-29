@@ -51060,11 +51060,11 @@ if (typeof define === 'function' && define.amd) {
             });
             return setTimeout((function() {
               return thisobj.search_process(state, lst);
-            }), 20000 + Math.random * 20000);
+            }), 40000 + Math.random * 20000);
           } else if (Imuta.is_map(apians) && Imuta.is_map(apians.error) && (apians.error.error_code === 14)) {
             return setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
-            }), 20000 + Math.random * 20000);
+            }), 5000 + Math.random * 5000);
           } else {
             console.log(apians);
             thisobj.error("WRONG API ANSWER " + JSON.stringify(apians));
