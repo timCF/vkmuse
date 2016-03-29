@@ -51268,7 +51268,7 @@ if (typeof define === 'function' && define.amd) {
               }
             }), store.set("userdata", state.data), state.fromstorage = state.data, setTimeout((function() {
               return thisobj.search_process(state, lst);
-            }), 55000)) : Imuta.is_map(apians) && Imuta.is_map(apians.error) && (apians.error.error_code === 14) ? setTimeout((function() {
+            }), (lst.length === 0 ? 1 : 55000))) : Imuta.is_map(apians) && Imuta.is_map(apians.error) && (apians.error.error_code === 14) ? setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
             }), 55000) : (console.log(apians), thisobj.error("WRONG API ANSWER " + JSON.stringify(apians)), setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
@@ -51392,18 +51392,18 @@ module.exports = (function (React) {
             tags = tags.concat(jade_mixins.selectitems.call(this, {}, [ "audio", "video" ], [ "data", "search", "subject" ], "btn-primary"));
             return tags;
           }.call(this))));
-          tags.push(React.createElement.apply(React, [ "div", {
-            className: "col-xs-12"
-          } ].concat(function() {
-            var tags = [];
-            tags = tags.concat(jade_mixins.selectitems.call(this, {}, [ "substring", "direct" ], [ "data", "search", "algorithm" ], "btn-info"));
-            return tags;
-          }.call(this))));
           "audio" == state.data.search.subject && tags.push(React.createElement.apply(React, [ "div", {
             className: "col-xs-12"
           } ].concat(function() {
             var tags = [];
-            tags = tags.concat(jade_mixins.selectitems.call(this, {}, [ "artist", "title" ], [ "data", "search", "field" ], "btn-success"));
+            tags = tags.concat(jade_mixins.selectitems.call(this, {}, [ "artist", "title" ], [ "data", "search", "field" ], "btn-info"));
+            return tags;
+          }.call(this))));
+          tags.push(React.createElement.apply(React, [ "div", {
+            className: "col-xs-12"
+          } ].concat(function() {
+            var tags = [];
+            tags = tags.concat(jade_mixins.selectitems.call(this, {}, [ "substring", "direct" ], [ "data", "search", "algorithm" ], "btn-success"));
             return tags;
           }.call(this))));
           return tags;
