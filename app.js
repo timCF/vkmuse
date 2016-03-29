@@ -50989,12 +50989,12 @@ if (typeof define === 'function' && define.amd) {
       var apians, thisobj, ___iced_passed_deferral, __iced_deferrals, __iced_k;
       __iced_k = __iced_k_noop;
       ___iced_passed_deferral = iced.findDeferral(arguments);
-      VK.init(function() {
-        return utils.notice("VK API connected");
-      }, function() {
-        return utils.error("VK API NOT connected");
-      }, "5.50");
       thisobj = this;
+      VK.init(function() {
+        return thisobj.notice("VK API connected");
+      }, function() {
+        return thisobj.error("VK API NOT connected");
+      }, "5.50");
       state.data.task.tail = lst;
       (function(_this) {
         return (function(__iced_k) {
