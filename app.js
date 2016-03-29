@@ -51426,14 +51426,14 @@ module.exports = (function (React) {
             className: "col-xs-12"
           }, React.createElement("button", {
             onClick: (jade_interp = utils, jade_interp.search.bind(jade_interp, state)),
-            className: "btn btn-danger fill"
+            className: "btn btn-danger form-control fill"
           }, "new search " + state.data.search.object)));
           if (state.fromstorage) {
             tags.push(React.createElement("div", {
               className: "col-xs-12"
             }, React.createElement("button", {
               onClick: (jade_interp = utils, jade_interp["continue"].bind(jade_interp, state)),
-              className: "btn btn-warning fill"
+              className: "btn btn-warning form-control fill"
             }, "continue")));
             tags.push(React.createElement("div", {
               className: "col-xs-12"
@@ -51441,7 +51441,7 @@ module.exports = (function (React) {
               onClick: (jade_interp = utils, jade_interp.download_processed.bind(jade_interp, {
                 data: state.fromstorage
               })),
-              className: "btn btn-info fill"
+              className: "btn btn-info form-control fill"
             }, "download processed")));
           }
           return tags;
