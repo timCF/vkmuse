@@ -51163,6 +51163,7 @@ if (typeof define === 'function' && define.amd) {
     },
     "continue": function(state) {
       state.data = state.fromstorage;
+      state.data.task.is_running = true;
       return this.search_process(state, Imuta.clone(state.data.task.tail));
     },
     search: function(state) {
@@ -51217,7 +51218,7 @@ if (typeof define === 'function' && define.amd) {
                   return apians = arguments[0];
                 };
               })(),
-              lineno: 51
+              lineno: 52
             }));
             __iced_deferrals._fulfill();
           });
@@ -51381,6 +51382,13 @@ module.exports = (function (React) {
             className: "col-xs-12"
           } ].concat(function() {
             var tags = [];
+            tags = tags.concat(jade_mixins.textareainput.call(this, {}, "enter " + state.data.search.field + " list", [ "data", "search", "inputsubjects" ]));
+            return tags;
+          }.call(this))));
+          tags.push(React.createElement.apply(React, [ "div", {
+            className: "col-xs-12"
+          } ].concat(function() {
+            var tags = [];
             tags = tags.concat(jade_mixins.selectitems.call(this, {}, [ "audio", "video" ], [ "data", "search", "subject" ], "btn-primary"));
             return tags;
           }.call(this))));
@@ -51398,14 +51406,23 @@ module.exports = (function (React) {
             tags = tags.concat(jade_mixins.selectitems.call(this, {}, [ "artist", "title" ], [ "data", "search", "field" ], "btn-success"));
             return tags;
           }.call(this))));
+          return tags;
+        }.call(this))))), React.createElement("div", {
+          className: "col-xs-6"
+        }, React.createElement("div", {
+          className: "container-fluid"
+        }, React.createElement.apply(React, [ "div", {
+          className: "row"
+        } ].concat(function() {
+          var tags = [];
           tags.push(React.createElement.apply(React, [ "div", {
             className: "col-xs-12"
           } ].concat(function() {
             var tags = [];
-            tags = tags.concat(jade_mixins.textareainput.call(this, {}, "enter " + state.data.search.field + " list", [ "data", "search", "inputsubjects" ]));
+            tags = tags.concat(jade_mixins.textareainput.call(this, {}, "enter " + state.data.search.object + " list", [ "data", "search", "inputobjects" ]));
             return tags;
           }.call(this))));
-          tags.push(React.createElement("div", {
+          "" != state.data.search.inputsubjects && "" != state.data.search.inputobjects && tags.push(React.createElement("div", {
             className: "col-xs-12"
           }, React.createElement("button", {
             onClick: (jade_interp = utils, jade_interp.search.bind(jade_interp, state)),
@@ -51415,22 +51432,10 @@ module.exports = (function (React) {
             className: "col-xs-12"
           }, React.createElement("button", {
             onClick: (jade_interp = utils, jade_interp["continue"].bind(jade_interp, state)),
-            className: "btn btn-success fill"
+            className: "btn btn-warning fill"
           }, "continue")));
           return tags;
-        }.call(this))))), React.createElement("div", {
-          className: "col-xs-6"
-        }, React.createElement("div", {
-          className: "container-fluid"
-        }, React.createElement("div", {
-          className: "row"
-        }, React.createElement.apply(React, [ "div", {
-          className: "col-xs-12"
-        } ].concat(function() {
-          var tags = [];
-          tags = tags.concat(jade_mixins.textareainput.call(this, {}, "enter " + state.data.search.object + " list", [ "data", "search", "inputobjects" ]));
-          return tags;
-        }.call(this)))))))));
+        }.call(this))))))));
       }
       state.data && state.data.task.is_running && tags.push(React.createElement("div", {
         className: "overlay"
