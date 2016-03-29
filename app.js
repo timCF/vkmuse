@@ -51162,7 +51162,8 @@ if (typeof define === 'function' && define.amd) {
       }
     },
     "continue": function(state) {
-      return console.log(state.fromstorage);
+      state.data = state.fromstorage;
+      return this.search_process(state, Imuta.clone(state.data.task.tail));
     },
     search: function(state) {
       var objects2search, thisobj;
@@ -51216,7 +51217,7 @@ if (typeof define === 'function' && define.amd) {
                   return apians = arguments[0];
                 };
               })(),
-              lineno: 50
+              lineno: 51
             }));
             __iced_deferrals._fulfill();
           });
