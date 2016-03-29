@@ -50959,20 +50959,23 @@ if (typeof define === 'function' && define.amd) {
       return Object.keys(todo);
     },
     search: function(state) {
+      var thisobj;
+      thisobj = this;
       state.methods.set_default_task();
       state.data.task.is_running = true;
-      state.data.search.inputsubjectslst = this.string2list(state.data.search.inputsubjects).map(function(el) {
+      state.data.search.inputsubjectslst = thisobj.string2list(state.data.search.inputsubjects).map(function(el) {
         return el.toUpperCase();
       });
-      return this.search_process(state, this.string2list(state.data.search.inputobjects));
+      return thisobj.search_process(state, thisobj.string2list(state.data.search.inputobjects));
     },
     search_process: function(state, lst) {
-      var cmd;
+      var cmd, thisobj;
+      thisobj = this;
       if (lst.length !== 0) {
         cmd = lst.splice(0, 25).map(function(el) {
           return "API." + state.data.search.subject + ".get({owner_id: " + el + ", need_user: 1})";
         }).join(",");
-        return this.search_process_execute(state, lst, "return [" + cmd + "];");
+        return thisobj.search_process_execute(state, lst, "return [" + cmd + "];");
       } else {
         if (state.data.task.acc.length !== 0) {
           download(state.data.task.acc.join("\r\n"), Date() + ".txt", "text/plain");
@@ -50983,11 +50986,11 @@ if (typeof define === 'function' && define.amd) {
       }
     },
     search_process_execute: function(state, lst, code) {
-      var apians, ___iced_passed_deferral, __iced_deferrals, __iced_k;
+      var apians, thisobj, ___iced_passed_deferral, __iced_deferrals, __iced_k;
       __iced_k = __iced_k_noop;
       ___iced_passed_deferral = iced.findDeferral(arguments);
+      thisobj = this;
       state.data.task.tail = lst;
-      console.log(1);
       (function(_this) {
         return (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
@@ -51001,13 +51004,12 @@ if (typeof define === 'function' && define.amd) {
                 return apians = arguments[0];
               };
             })(),
-            lineno: 36
+            lineno: 38
           }));
           __iced_deferrals._fulfill();
         });
       })(this)((function(_this) {
         return function() {
-          console.log(2);
           if (Imuta.is_map(apians) && Imuta.is_list(apians.response)) {
             apians.response.forEach(function(el) {
               var audio, uid, _ref, _ref1;
@@ -51042,7 +51044,7 @@ if (typeof define === 'function' && define.amd) {
                   }
                 } else {
                   console.log(el);
-                  this.error("WRONG API ANS ELEMENT " + JSON.stringify(el));
+                  thisobj.error("WRONG API ANS ELEMENT " + JSON.stringify(el));
                   return state.data.task.n_error++;
                 }
               } else {
@@ -51050,13 +51052,13 @@ if (typeof define === 'function' && define.amd) {
               }
             });
             return setTimeout((function() {
-              return this.search_process(state, lst);
+              return thisobj.search_process(state, lst);
             }), 1500 + Math.random * 1500);
           } else {
             console.log(apians);
-            _this.error("WRONG API ANSWER " + JSON.stringify(apians));
+            thisobj.error("WRONG API ANSWER " + JSON.stringify(apians));
             return setTimeout((function() {
-              return this.search_process_execute(state, lst, code);
+              return thisobj.search_process_execute(state, lst, code);
             }), 5000 + Math.random * 5000);
           }
         };
