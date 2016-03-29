@@ -51061,11 +51061,11 @@ if (typeof define === 'function' && define.amd) {
             });
             return setTimeout((function() {
               return thisobj.search_process(state, lst);
-            }), 60000);
+            }), 50000);
           } else if (Imuta.is_map(apians) && Imuta.is_map(apians.error) && (apians.error.error_code === 14)) {
             return setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
-            }), 60000);
+            }), 50000);
           } else {
             console.log(apians);
             thisobj.error("WRONG API ANSWER " + JSON.stringify(apians));
