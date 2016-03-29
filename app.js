@@ -50992,9 +50992,6 @@ if (typeof define === 'function' && define.amd) {
       __iced_k = __iced_k_noop;
       ___iced_passed_deferral = iced.findDeferral(arguments);
       thisobj = this;
-      console.log(["n_total", "n_ok", "n_mismatch", "n_error"].map(function(el) {
-        return state.data.task[el];
-      }));
       state.data.task.tail = lst;
       (function(_this) {
         return (function(__iced_k) {
@@ -51011,7 +51008,7 @@ if (typeof define === 'function' && define.amd) {
                 return apians = arguments[0];
               };
             })(),
-            lineno: 41
+            lineno: 40
           }));
           __iced_deferrals._fulfill();
         });
