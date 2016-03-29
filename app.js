@@ -51049,22 +51049,31 @@ if (typeof define === 'function' && define.amd) {
                       }
                   }
                 } else {
+                  console.log(el);
                   thisobj.error("WRONG API ANS ELEMENT ITEMS " + JSON.stringify(el));
                   return state.data.task.n_error++;
                 }
+              } else if (el === false) {
+                return state.data.task.n_error++;
               } else {
+                console.log(el);
                 thisobj.error("WRONG API ANS ELEMENT " + JSON.stringify(el));
                 return state.data.task.n_error++;
               }
             });
             return setTimeout((function() {
               return thisobj.search_process(state, lst);
-            }), 10000 + Math.random * 10000);
+            }), 15000 + Math.random * 15000);
+          } else if (Imuta.is_map(apians) && Imuta.is_map(apians.error) && (apians.error.error_code === 14)) {
+            return setTimeout((function() {
+              return thisobj.search_process_execute(state, lst, code);
+            }), 15000 + Math.random * 15000);
           } else {
+            console.log(apians);
             thisobj.error("WRONG API ANSWER " + JSON.stringify(apians));
             return setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
-            }), 10000 + Math.random * 10000);
+            }), 5000 + Math.random * 5000);
           }
         };
       })(this));
