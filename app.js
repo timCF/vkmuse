@@ -50959,15 +50959,16 @@ if (typeof define === 'function' && define.amd) {
       return Object.keys(todo);
     },
     search: function(state) {
-      var thisobj;
+      var objects2search, thisobj;
       thisobj = this;
       state.methods.set_default_task();
       state.data.task.is_running = true;
       state.data.search.inputsubjectslst = thisobj.string2list(state.data.search.inputsubjects).map(function(el) {
         return el.toUpperCase();
       });
-      state.data.task.n_total = (state.data.search.inputsubjectslst.length === 0 ? 1 : state.data.search.inputsubjectslst.length);
-      return thisobj.search_process(state, thisobj.string2list(state.data.search.inputobjects));
+      objects2search = thisobj.string2list(state.data.search.inputobjects);
+      state.data.task.n_total = (objects2search.length === 0 ? 1 : objects2search.length);
+      return thisobj.search_process(state, objects2search);
     },
     search_process: function(state, lst) {
       var cmd, thisobj;
@@ -51010,7 +51011,7 @@ if (typeof define === 'function' && define.amd) {
                 return apians = arguments[0];
               };
             })(),
-            lineno: 40
+            lineno: 41
           }));
           __iced_deferrals._fulfill();
         });
