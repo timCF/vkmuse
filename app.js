@@ -50966,6 +50966,7 @@ if (typeof define === 'function' && define.amd) {
       state.data.search.inputsubjectslst = thisobj.string2list(state.data.search.inputsubjects).map(function(el) {
         return el.toUpperCase();
       });
+      state.data.task.n_total = (state.data.search.inputsubjectslst.length === 0 ? 1 : state.data.search.inputsubjectslst.length);
       return thisobj.search_process(state, thisobj.string2list(state.data.search.inputobjects));
     },
     search_process: function(state, lst) {
@@ -50974,8 +50975,8 @@ if (typeof define === 'function' && define.amd) {
       if (lst.length !== 0) {
         cmd = lst.splice(0, 25).map(function(el) {
           return "API." + state.data.search.subject + ".get({owner_id: " + el + ", need_user: 1})";
-        }).join(",");
-        return thisobj.search_process_execute(state, lst, "return [" + cmd + "];");
+        });
+        return thisobj.search_process_execute(state, lst, cmd);
       } else {
         if (state.data.task.acc.length !== 0) {
           download(state.data.task.acc.join("\r\n"), Date() + ".txt", "text/plain");
@@ -50990,11 +50991,6 @@ if (typeof define === 'function' && define.amd) {
       __iced_k = __iced_k_noop;
       ___iced_passed_deferral = iced.findDeferral(arguments);
       thisobj = this;
-      VK.init(function() {
-        return thisobj.notice("VK API connected");
-      }, function() {
-        return thisobj.error("VK API NOT connected");
-      }, "5.50");
       state.data.task.tail = lst;
       (function(_this) {
         return (function(__iced_k) {
@@ -51002,14 +50998,16 @@ if (typeof define === 'function' && define.amd) {
             parent: ___iced_passed_deferral
           });
           VK.api("execute", {
-            code: code
+            code: "return [" + code.sort(function(_) {
+              return 0.5 - Math.random();
+            }).join(",") + "];"
           }, __iced_deferrals.defer({
             assign_fn: (function() {
               return function() {
                 return apians = arguments[0];
               };
             })(),
-            lineno: 42
+            lineno: 39
           }));
           __iced_deferrals._fulfill();
         });
