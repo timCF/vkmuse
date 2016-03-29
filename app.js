@@ -51044,16 +51044,18 @@ if (typeof define === 'function' && define.amd) {
                   }
                 } else {
                   console.log(el);
-                  thisobj.error("WRONG API ANS ELEMENT " + JSON.stringify(el));
+                  thisobj.error("WRONG API ANS ELEMENT ITEMS " + JSON.stringify(el));
                   return state.data.task.n_error++;
                 }
               } else {
+                console.log(el);
+                thisobj.error("WRONG API ANS ELEMENT " + JSON.stringify(el));
                 return state.data.task.n_error++;
               }
             });
             return setTimeout((function() {
               return thisobj.search_process(state, lst);
-            }), 1500 + Math.random * 1500);
+            }), 5000 + Math.random * 5000);
           } else {
             console.log(apians);
             thisobj.error("WRONG API ANSWER " + JSON.stringify(apians));
