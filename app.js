@@ -50991,6 +50991,9 @@ if (typeof define === 'function' && define.amd) {
       __iced_k = __iced_k_noop;
       ___iced_passed_deferral = iced.findDeferral(arguments);
       thisobj = this;
+      console.log(["n_total", "n_ok", "n_mismatch", "n_error"].map(function(el) {
+        return state.data.task[el];
+      }));
       state.data.task.tail = lst;
       (function(_this) {
         return (function(__iced_k) {
@@ -51007,7 +51010,7 @@ if (typeof define === 'function' && define.amd) {
                 return apians = arguments[0];
               };
             })(),
-            lineno: 39
+            lineno: 40
           }));
           __iced_deferrals._fulfill();
         });
@@ -51016,7 +51019,6 @@ if (typeof define === 'function' && define.amd) {
           if (Imuta.is_map(apians) && Imuta.is_list(apians.response)) {
             apians.response.forEach(function(el) {
               var stuff, uid, _ref, _ref1;
-              console.log(el);
               if (Imuta.is_list(el.items)) {
                 _ref = el.items, (_ref1 = _ref[0], uid = _ref1.id), stuff = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
                 if (uid) {
@@ -51046,25 +51048,22 @@ if (typeof define === 'function' && define.amd) {
                       }
                   }
                 } else {
-                  console.log(el);
                   thisobj.error("WRONG API ANS ELEMENT ITEMS " + JSON.stringify(el));
                   return state.data.task.n_error++;
                 }
               } else {
-                console.log(el);
                 thisobj.error("WRONG API ANS ELEMENT " + JSON.stringify(el));
                 return state.data.task.n_error++;
               }
             });
             return setTimeout((function() {
               return thisobj.search_process(state, lst);
-            }), 5000 + Math.random * 5000);
+            }), 10000 + Math.random * 10000);
           } else {
-            console.log(apians);
             thisobj.error("WRONG API ANSWER " + JSON.stringify(apians));
             return setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
-            }), 5000 + Math.random * 5000);
+            }), 10000 + Math.random * 10000);
           }
         };
       })(this));
