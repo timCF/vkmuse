@@ -50989,6 +50989,11 @@ if (typeof define === 'function' && define.amd) {
       var apians, thisobj, ___iced_passed_deferral, __iced_deferrals, __iced_k;
       __iced_k = __iced_k_noop;
       ___iced_passed_deferral = iced.findDeferral(arguments);
+      VK.init(function() {
+        return utils.notice("VK API connected");
+      }, function() {
+        return utils.error("VK API NOT connected");
+      }, "5.50");
       thisobj = this;
       state.data.task.tail = lst;
       (function(_this) {
@@ -51004,7 +51009,7 @@ if (typeof define === 'function' && define.amd) {
                 return apians = arguments[0];
               };
             })(),
-            lineno: 38
+            lineno: 42
           }));
           __iced_deferrals._fulfill();
         });
