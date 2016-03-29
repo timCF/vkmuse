@@ -50517,6 +50517,198 @@ module.exports = warning;
   return React.__SECRET_DOM_DO_NOT_USE_OR_YOU_WILL_BE_FIRED;
 });
 
+"use strict"
+// Module export pattern from
+// https://github.com/umdjs/umd/blob/master/returnExports.js
+;(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory();
+    } else {
+        // Browser globals (root is window)
+        root.store = factory();
+  }
+}(this, function () {
+	
+	// Store.js
+	var store = {},
+		win = (typeof window != 'undefined' ? window : global),
+		doc = win.document,
+		localStorageName = 'localStorage',
+		scriptTag = 'script',
+		storage
+
+	store.disabled = false
+	store.version = '1.3.20'
+	store.set = function(key, value) {}
+	store.get = function(key, defaultVal) {}
+	store.has = function(key) { return store.get(key) !== undefined }
+	store.remove = function(key) {}
+	store.clear = function() {}
+	store.transact = function(key, defaultVal, transactionFn) {
+		if (transactionFn == null) {
+			transactionFn = defaultVal
+			defaultVal = null
+		}
+		if (defaultVal == null) {
+			defaultVal = {}
+		}
+		var val = store.get(key, defaultVal)
+		transactionFn(val)
+		store.set(key, val)
+	}
+	store.getAll = function() {}
+	store.forEach = function() {}
+
+	store.serialize = function(value) {
+		return JSON.stringify(value)
+	}
+	store.deserialize = function(value) {
+		if (typeof value != 'string') { return undefined }
+		try { return JSON.parse(value) }
+		catch(e) { return value || undefined }
+	}
+
+	// Functions to encapsulate questionable FireFox 3.6.13 behavior
+	// when about.config::dom.storage.enabled === false
+	// See https://github.com/marcuswestin/store.js/issues#issue/13
+	function isLocalStorageNameSupported() {
+		try { return (localStorageName in win && win[localStorageName]) }
+		catch(err) { return false }
+	}
+
+	if (isLocalStorageNameSupported()) {
+		storage = win[localStorageName]
+		store.set = function(key, val) {
+			if (val === undefined) { return store.remove(key) }
+			storage.setItem(key, store.serialize(val))
+			return val
+		}
+		store.get = function(key, defaultVal) {
+			var val = store.deserialize(storage.getItem(key))
+			return (val === undefined ? defaultVal : val)
+		}
+		store.remove = function(key) { storage.removeItem(key) }
+		store.clear = function() { storage.clear() }
+		store.getAll = function() {
+			var ret = {}
+			store.forEach(function(key, val) {
+				ret[key] = val
+			})
+			return ret
+		}
+		store.forEach = function(callback) {
+			for (var i=0; i<storage.length; i++) {
+				var key = storage.key(i)
+				callback(key, store.get(key))
+			}
+		}
+	} else if (doc && doc.documentElement.addBehavior) {
+		var storageOwner,
+			storageContainer
+		// Since #userData storage applies only to specific paths, we need to
+		// somehow link our data to a specific path.  We choose /favicon.ico
+		// as a pretty safe option, since all browsers already make a request to
+		// this URL anyway and being a 404 will not hurt us here.  We wrap an
+		// iframe pointing to the favicon in an ActiveXObject(htmlfile) object
+		// (see: http://msdn.microsoft.com/en-us/library/aa752574(v=VS.85).aspx)
+		// since the iframe access rules appear to allow direct access and
+		// manipulation of the document element, even for a 404 page.  This
+		// document can be used instead of the current document (which would
+		// have been limited to the current path) to perform #userData storage.
+		try {
+			storageContainer = new ActiveXObject('htmlfile')
+			storageContainer.open()
+			storageContainer.write('<'+scriptTag+'>document.w=window</'+scriptTag+'><iframe src="/favicon.ico"></iframe>')
+			storageContainer.close()
+			storageOwner = storageContainer.w.frames[0].document
+			storage = storageOwner.createElement('div')
+		} catch(e) {
+			// somehow ActiveXObject instantiation failed (perhaps some special
+			// security settings or otherwse), fall back to per-path storage
+			storage = doc.createElement('div')
+			storageOwner = doc.body
+		}
+		var withIEStorage = function(storeFunction) {
+			return function() {
+				var args = Array.prototype.slice.call(arguments, 0)
+				args.unshift(storage)
+				// See http://msdn.microsoft.com/en-us/library/ms531081(v=VS.85).aspx
+				// and http://msdn.microsoft.com/en-us/library/ms531424(v=VS.85).aspx
+				storageOwner.appendChild(storage)
+				storage.addBehavior('#default#userData')
+				storage.load(localStorageName)
+				var result = storeFunction.apply(store, args)
+				storageOwner.removeChild(storage)
+				return result
+			}
+		}
+
+		// In IE7, keys cannot start with a digit or contain certain chars.
+		// See https://github.com/marcuswestin/store.js/issues/40
+		// See https://github.com/marcuswestin/store.js/issues/83
+		var forbiddenCharsRegex = new RegExp("[!\"#$%&'()*+,/\\\\:;<=>?@[\\]^`{|}~]", "g")
+		var ieKeyFix = function(key) {
+			return key.replace(/^d/, '___$&').replace(forbiddenCharsRegex, '___')
+		}
+		store.set = withIEStorage(function(storage, key, val) {
+			key = ieKeyFix(key)
+			if (val === undefined) { return store.remove(key) }
+			storage.setAttribute(key, store.serialize(val))
+			storage.save(localStorageName)
+			return val
+		})
+		store.get = withIEStorage(function(storage, key, defaultVal) {
+			key = ieKeyFix(key)
+			var val = store.deserialize(storage.getAttribute(key))
+			return (val === undefined ? defaultVal : val)
+		})
+		store.remove = withIEStorage(function(storage, key) {
+			key = ieKeyFix(key)
+			storage.removeAttribute(key)
+			storage.save(localStorageName)
+		})
+		store.clear = withIEStorage(function(storage) {
+			var attributes = storage.XMLDocument.documentElement.attributes
+			storage.load(localStorageName)
+			for (var i=attributes.length-1; i>=0; i--) {
+				storage.removeAttribute(attributes[i].name)
+			}
+			storage.save(localStorageName)
+		})
+		store.getAll = function(storage) {
+			var ret = {}
+			store.forEach(function(key, val) {
+				ret[key] = val
+			})
+			return ret
+		}
+		store.forEach = withIEStorage(function(storage, callback) {
+			var attributes = storage.XMLDocument.documentElement.attributes
+			for (var i=0, attr; attr=attributes[i]; ++i) {
+				callback(attr.name, store.deserialize(storage.getAttribute(attr.name)))
+			}
+		})
+	}
+
+	try {
+		var testKey = '__storejs__'
+		store.set(testKey, testKey)
+		if (store.get(testKey) != testKey) { store.disabled = true }
+		store.remove(testKey)
+	} catch(e) {
+		store.disabled = true
+	}
+	store.enabled = !store.disabled
+	
+	return store
+}));
+
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.jade = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
@@ -50823,6 +51015,7 @@ if (typeof define === 'function' && define.amd) {
     }, "5.50");
     state.data = {};
     state.methods = {};
+    state.fromstorage = store.get("userdata");
     state.methods.set_default_search = function() {
       return state.data.search = {
         object: "users",
@@ -50958,6 +51151,19 @@ if (typeof define === 'function' && define.amd) {
       }), {});
       return Object.keys(todo);
     },
+    pause: function(state) {
+      return state.data.task.is_running = false;
+    },
+    download_processed: function(state) {
+      if (state.data.task.acc.length !== 0) {
+        return download(state.data.task.acc.join("\r\n"), Date() + ".txt", "text/plain");
+      } else {
+        return this.error("empty objects list");
+      }
+    },
+    "continue": function(state) {
+      return console.log(state.fromstorage);
+    },
     search: function(state) {
       var objects2search, thisobj;
       thisobj = this;
@@ -50973,18 +51179,18 @@ if (typeof define === 'function' && define.amd) {
     search_process: function(state, lst) {
       var cmd, thisobj;
       thisobj = this;
-      if (lst.length !== 0) {
-        cmd = lst.splice(0, 25).map(function(el) {
-          return "API." + state.data.search.subject + ".get({owner_id: " + el + ", need_user: 1})";
-        });
-        return thisobj.search_process_execute(state, lst, cmd);
-      } else {
-        if (state.data.task.acc.length !== 0) {
-          download(state.data.task.acc.join("\r\n"), Date() + ".txt", "text/plain");
+      if (state.data.task.is_running) {
+        if (lst.length !== 0) {
+          cmd = lst.splice(0, 25).map(function(el) {
+            return "API." + state.data.search.subject + ".get({owner_id: " + el + ", need_user: 1})";
+          });
+          return thisobj.search_process_execute(state, lst, cmd);
         } else {
-          this.error("empty objects list");
+          thisobj.download_processed(state);
+          store.remove("userdata");
+          state.fromstorage = void 0;
+          return state.methods.set_default_task();
         }
-        return state.methods.set_default_task();
       }
     },
     search_process_execute: function(state, lst, code) {
@@ -50992,31 +51198,31 @@ if (typeof define === 'function' && define.amd) {
       __iced_k = __iced_k_noop;
       ___iced_passed_deferral = iced.findDeferral(arguments);
       thisobj = this;
-      state.data.task.tail = lst;
-      console.log(Date());
-      (function(_this) {
-        return (function(__iced_k) {
-          __iced_deferrals = new iced.Deferrals(__iced_k, {
-            parent: ___iced_passed_deferral
+      if (state.data.task.is_running) {
+        state.data.task.tail = lst;
+        console.log(Date());
+        (function(_this) {
+          return (function(__iced_k) {
+            __iced_deferrals = new iced.Deferrals(__iced_k, {
+              parent: ___iced_passed_deferral
+            });
+            VK.api("execute", {
+              code: "return [" + code.sort(function(_) {
+                return 0.5 - Math.random();
+              }).join(",") + "];"
+            }, __iced_deferrals.defer({
+              assign_fn: (function() {
+                return function() {
+                  return apians = arguments[0];
+                };
+              })(),
+              lineno: 50
+            }));
+            __iced_deferrals._fulfill();
           });
-          VK.api("execute", {
-            code: "return [" + code.sort(function(_) {
-              return 0.5 - Math.random();
-            }).join(",") + "];"
-          }, __iced_deferrals.defer({
-            assign_fn: (function() {
-              return function() {
-                return apians = arguments[0];
-              };
-            })(),
-            lineno: 41
-          }));
-          __iced_deferrals._fulfill();
-        });
-      })(this)((function(_this) {
-        return function() {
-          if (Imuta.is_map(apians) && Imuta.is_list(apians.response)) {
-            apians.response.forEach(function(el) {
+        })(this)((function(_this) {
+          return function() {
+            return __iced_k(Imuta.is_map(apians) && Imuta.is_list(apians.response) ? (apians.response.forEach(function(el) {
               var stuff, uid, _ref, _ref1;
               if (Imuta.is_list(el.items)) {
                 _ref = el.items, (_ref1 = _ref[0], uid = _ref1.id), stuff = 2 <= _ref.length ? __slice.call(_ref, 1) : [];
@@ -51058,23 +51264,18 @@ if (typeof define === 'function' && define.amd) {
                 thisobj.error("WRONG API ANS ELEMENT " + JSON.stringify(el));
                 return state.data.task.n_error++;
               }
-            });
-            return setTimeout((function() {
+            }), store.set("userdata", state.data), state.fromstorage = state.data, setTimeout((function() {
               return thisobj.search_process(state, lst);
-            }), 55000);
-          } else if (Imuta.is_map(apians) && Imuta.is_map(apians.error) && (apians.error.error_code === 14)) {
-            return setTimeout((function() {
+            }), 55000)) : Imuta.is_map(apians) && Imuta.is_map(apians.error) && (apians.error.error_code === 14) ? setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
-            }), 55000);
-          } else {
-            console.log(apians);
-            thisobj.error("WRONG API ANSWER " + JSON.stringify(apians));
-            return setTimeout((function() {
+            }), 55000) : (console.log(apians), thisobj.error("WRONG API ANSWER " + JSON.stringify(apians)), setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
-            }), 5000);
-          }
-        };
-      })(this));
+            }), 5000)));
+          };
+        })(this));
+      } else {
+        return __iced_k();
+      }
     }
   };
 
@@ -51150,21 +51351,19 @@ module.exports = (function (React) {
       if (state.data) {
         tags.push(React.createElement("nav", {
           className: "navbar navbar-default navbar-fixed-top transparent text-center"
-        }, React.createElement("div", {
-          className: "btn-group"
+        }, React.createElement("a", {
+          href: "http://timcf.github.io/",
+          target: "_blank"
         }, React.createElement("button", {
-          onClick: (jade_interp = utils, jade_interp.info.bind(jade_interp, "hello nextgenjs")),
-          className: "btn btn-default navbar-btn"
-        }, "info"), React.createElement("button", {
-          onClick: (jade_interp = utils, jade_interp.notice.bind(jade_interp, "hello nextgenjs")),
+          type: "button",
           className: "btn btn-info navbar-btn"
-        }, "notice"), React.createElement("button", {
-          onClick: (jade_interp = utils, jade_interp.warn.bind(jade_interp, "hello nextgenjs")),
-          className: "btn btn-warning navbar-btn"
-        }, "warn"), React.createElement("button", {
-          onClick: (jade_interp = utils, jade_interp.error.bind(jade_interp, "hello nextgenjs")),
-          className: "btn btn-danger navbar-btn"
-        }, "error"))));
+        }, "autor")), React.createElement("a", {
+          href: "http://yasobe.ru/na/opensource#form_submit",
+          target: "_blank"
+        }, React.createElement("button", {
+          type: "button",
+          className: "btn btn-success navbar-btn"
+        }, "donate"))));
         tags.push(React.createElement("div", {
           className: "container-fluid"
         }, React.createElement("div", {
@@ -51210,7 +51409,13 @@ module.exports = (function (React) {
           }, React.createElement("button", {
             onClick: (jade_interp = utils, jade_interp.search.bind(jade_interp, state)),
             className: "btn btn-danger fill"
-          }, "search " + state.data.search.object)));
+          }, "new search " + state.data.search.object)));
+          state.fromstorage && tags.push(React.createElement("div", {
+            className: "col-xs-12"
+          }, React.createElement("button", {
+            onClick: (jade_interp = utils, jade_interp["continue"].bind(jade_interp, state)),
+            className: "btn btn-success fill"
+          }, "continue")));
           return tags;
         }.call(this))))), React.createElement("div", {
           className: "col-xs-6"
@@ -51229,7 +51434,11 @@ module.exports = (function (React) {
       state.data && state.data.task.is_running && tags.push(React.createElement("div", {
         className: "overlay"
       }, React.createElement("div", {
-        className: "pbar fill"
+        className: "container-fluid"
+      }, React.createElement("div", {
+        className: "row"
+      }, React.createElement("div", {
+        className: "col-xs-12"
       }, React.createElement.apply(React, [ "div", {
         className: "progress fill"
       } ].concat(function() {
@@ -51252,7 +51461,19 @@ module.exports = (function (React) {
           className: "progress-bar progress-bar-primary progress-bar-striped active"
         }));
         return tags;
-      }.call(this))))));
+      }.call(this))))), React.createElement("div", {
+        className: "row"
+      }, React.createElement("div", {
+        className: "col-xs-6"
+      }, React.createElement("button", {
+        onClick: (jade_interp = utils, jade_interp.pause.bind(jade_interp, state)),
+        className: "btn btn-warning fill"
+      }, "pause")), React.createElement("div", {
+        className: "col-xs-6"
+      }, React.createElement("button", {
+        onClick: (jade_interp = utils, jade_interp.download_processed.bind(jade_interp, state)),
+        className: "btn btn-info fill"
+      }, "download processed"))))));
     }).call(this, "Object" in locals_for_with ? locals_for_with.Object : typeof Object !== "undefined" ? Object : undefined);
     if (tags.length === 1 && !Array.isArray(tags[0])) {
       return tags.pop();

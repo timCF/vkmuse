@@ -6854,6 +6854,10 @@ body {
   padding: 0 !important;
   margin: 0 !important; }
 
+.progress {
+  padding: 0 !important;
+  margin: 0 !important; }
+
 .overlay {
   z-index: 99999;
   position: fixed;
@@ -6864,10 +6868,6 @@ body {
   list-style: none;
   margin: 0;
   background: rgba(0, 0, 0, 0.8); }
-
-.pbar {
-  position: fixed;
-  top: 1%; }
 
 
 /*# sourceMappingURL=app.css.map*/
