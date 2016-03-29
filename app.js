@@ -50993,6 +50993,7 @@ if (typeof define === 'function' && define.amd) {
       ___iced_passed_deferral = iced.findDeferral(arguments);
       thisobj = this;
       state.data.task.tail = lst;
+      console.log(Date());
       (function(_this) {
         return (function(__iced_k) {
           __iced_deferrals = new iced.Deferrals(__iced_k, {
@@ -51008,7 +51009,7 @@ if (typeof define === 'function' && define.amd) {
                 return apians = arguments[0];
               };
             })(),
-            lineno: 40
+            lineno: 41
           }));
           __iced_deferrals._fulfill();
         });
@@ -51060,17 +51061,17 @@ if (typeof define === 'function' && define.amd) {
             });
             return setTimeout((function() {
               return thisobj.search_process(state, lst);
-            }), 40000 + Math.random * 20000);
+            }), 60000);
           } else if (Imuta.is_map(apians) && Imuta.is_map(apians.error) && (apians.error.error_code === 14)) {
             return setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
-            }), 5000 + Math.random * 5000);
+            }), 60000);
           } else {
             console.log(apians);
             thisobj.error("WRONG API ANSWER " + JSON.stringify(apians));
             return setTimeout((function() {
               return thisobj.search_process_execute(state, lst, code);
-            }), 5000 + Math.random * 5000);
+            }), 5000);
           }
         };
       })(this));
