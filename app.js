@@ -50988,6 +50988,8 @@ if (typeof define === 'function' && define.amd) {
     var fullstate, react, state, utils, widget;
     state = {};
     utils = Object.freeze(require("utils"));
+    window.addEventListener("dragover", utils.devnull);
+    window.addEventListener("drop", utils.devnull);
     fullstate = Object.freeze({
       state: state,
       utils: utils
@@ -51094,6 +51096,12 @@ if (typeof define === 'function' && define.amd) {
   console.log("load utils.iced");
 
   module.exports = {
+    devnull: function(e) {
+      e = e || event;
+      if (!(e.target && (e.target.type === "file"))) {
+        return e.preventDefault();
+      }
+    },
     error: function(mess) {
       return $.growl.error({
         message: mess,
@@ -51134,11 +51142,9 @@ if (typeof define === 'function' && define.amd) {
     },
     view_files: function(state, path, ev) {
       if ((ev != null) && (ev.target != null) && (ev.target.files != null) && (ev.target.files.length > 0)) {
-        return Imuta.update_in(state, path, function(_) {
-          return [].map.call(ev.target.files, function(el) {
-            return el;
-          });
-        });
+        return console.log([].map.call(ev.target.files, function(el) {
+          return el;
+        }));
       }
     },
     string2list: function(str) {
@@ -51162,9 +51168,13 @@ if (typeof define === 'function' && define.amd) {
       }
     },
     "continue": function(state) {
+      var thisobj;
+      thisobj = this;
       state.data = state.fromstorage;
       state.data.task.is_running = true;
-      return this.search_process(state, Imuta.clone(state.data.task.tail));
+      return setTimeout((function() {
+        return thisobj.search_process(state, Imuta.clone(state.data.task.tail));
+      }), 55000);
     },
     search: function(state) {
       var objects2search, thisobj;
@@ -51176,7 +51186,9 @@ if (typeof define === 'function' && define.amd) {
       });
       objects2search = thisobj.string2list(state.data.search.inputobjects);
       state.data.task.n_total = (objects2search.length === 0 ? 1 : objects2search.length);
-      return thisobj.search_process(state, objects2search);
+      return setTimeout((function() {
+        return thisobj.search_process(state, objects2search);
+      }), 55000);
     },
     search_process: function(state, lst) {
       var cmd, thisobj;
@@ -51218,7 +51230,7 @@ if (typeof define === 'function' && define.amd) {
                   return apians = arguments[0];
                 };
               })(),
-              lineno: 52
+              lineno: 57
             }));
             __iced_deferrals._fulfill();
           });
@@ -51336,6 +51348,18 @@ module.exports = (function (React) {
         }.call(this)));
         return tags;
       };
+      jade_mixins.fileinput = function(jade_mixin_options, path, style) {
+        jade_mixin_options && jade_mixin_options.block, jade_mixin_options && jade_mixin_options.attributes || {};
+        var tags = [];
+        tags.push(React.createElement("div", {
+          className: jade_join_classes([ "btn", "btn-lg", "btn-file", "fill", style ])
+        }, "Browse or drag and drop files", React.createElement("input", {
+          type: "file",
+          multiple: "true",
+          onChange: (jade_interp = utils, jade_interp.view_files.bind(jade_interp, state, path))
+        })));
+        return tags;
+      };
       jade_mixins.textareainput = function(jade_mixin_options, placeholder, path) {
         jade_mixin_options && jade_mixin_options.block, jade_mixin_options && jade_mixin_options.attributes || {};
         var tags = [];
@@ -51359,13 +51383,17 @@ module.exports = (function (React) {
         }, React.createElement("button", {
           type: "button",
           className: "btn btn-info navbar-btn"
-        }, "autor")), React.createElement("a", {
+        }, React.createElement("span", {
+          className: "glyphicon glyphicon-user"
+        }))), React.createElement("a", {
           href: "http://yasobe.ru/na/opensource#form_submit",
           target: "_blank"
         }, React.createElement("button", {
           type: "button",
           className: "btn btn-success navbar-btn"
-        }, "donate"))));
+        }, React.createElement("span", {
+          className: "glyphicon glyphicon-usd"
+        })))));
         tags.push(React.createElement("div", {
           className: "container-fluid"
         }, React.createElement("div", {
@@ -51382,7 +51410,14 @@ module.exports = (function (React) {
             className: "col-xs-12"
           } ].concat(function() {
             var tags = [];
-            tags = tags.concat(jade_mixins.textareainput.call(this, {}, "enter " + state.data.search.field + " list", [ "data", "search", "inputsubjects" ]));
+            tags = tags.concat(jade_mixins.fileinput.call(this, {}, [ "data", "search", "inputsubjects" ], "btn-primary"));
+            return tags;
+          }.call(this))));
+          tags.push(React.createElement.apply(React, [ "div", {
+            className: "col-xs-12"
+          } ].concat(function() {
+            var tags = [];
+            tags = tags.concat(jade_mixins.textareainput.call(this, {}, "... or enter " + state.data.search.field + " list", [ "data", "search", "inputsubjects" ]));
             return tags;
           }.call(this))));
           tags.push(React.createElement.apply(React, [ "div", {
@@ -51419,7 +51454,14 @@ module.exports = (function (React) {
             className: "col-xs-12"
           } ].concat(function() {
             var tags = [];
-            tags = tags.concat(jade_mixins.textareainput.call(this, {}, "enter " + state.data.search.object + " list", [ "data", "search", "inputobjects" ]));
+            tags = tags.concat(jade_mixins.fileinput.call(this, {}, [ "data", "search", "inputobjects" ], "btn-primary"));
+            return tags;
+          }.call(this))));
+          tags.push(React.createElement.apply(React, [ "div", {
+            className: "col-xs-12"
+          } ].concat(function() {
+            var tags = [];
+            tags = tags.concat(jade_mixins.textareainput.call(this, {}, "... or enter " + state.data.search.object + " list", [ "data", "search", "inputobjects" ]));
             return tags;
           }.call(this))));
           "" != state.data.search.inputsubjects && "" != state.data.search.inputobjects && tags.push(React.createElement("div", {
